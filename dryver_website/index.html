@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day: Driver. Night: Builder.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050505;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .bg-layer {
+            position: fixed;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.18);
+            z-index: -3;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), #050505);
+            z-index: -2;
+        }
+
+        section {
+            padding: 120px 24px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .hero {
+            text-align: center;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: clamp(42px, 6vw, 80px);
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: linear-gradient(90deg, #fff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: clamp(22px, 3vw, 32px);
+            color: #00ff88;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: #cfcfcf;
+            max-width: 760px;
+            margin-bottom: 20px;
+        }
+
+        .timestamp {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: #00ff88;
+            opacity: 0.8;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 80px;
+            align-items: center;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card {
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 50px;
+            border-radius: 24px;
+            border: 1px solid #1a1a1a;
+            transition: 0.4s;
+        }
+
+        .card:hover {
+            border-color: #00ff88;
+            transform: translateY(-10px);
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 30px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .primary {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .primary:hover {
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
+        }
+
+        .qr-box img {
+            width: 200px;
+            border-radius: 16px;
+            margin-top: 20px;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 100px 20px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* Floating Share Button */
+        .share-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.5);
+            transition: 0.3s;
+            z-index: 999;
+        }
+
+        .share-float:hover {
+            transform: scale(1.1);
+        }
+
+        /* Share Popup */
+        .share-popup {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            background: #0f0f0f;
+            border: 1px solid #00ff88;
+            padding: 24px;
+            border-radius: 20px;
+            width: 280px;
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            animation: fadeUp 0.4s ease;
+            z-index: 999;
+        }
+
+        .share-popup button {
+            padding: 12px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: #000;
+        }
+
+        .close-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #333;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-layer"></div>
+    <div class="bg-overlay"></div>
+
+    <section class="hero fade-in">
+        <h1>DAY: DRIVER.<br>NIGHT: BUILDER.</h1>
+        <h2>This ride funds something bigger.</h2>
+        <p>
+            12+ hour Bangalore shifts. Then code at midnight.
+            Not complaining. Just building.
+        </p>
+        <div class="timestamp" id="timestamp"></div>
+    </section>
+
+    <section>
+        <div class="grid">
+            <div class="fade-in">
+                <h2>The Reality Drivers Face</h2>
+                <p>
+                    Fuel rising. Incentives dropping.
+                    Ratings controlling income.
+                    One algorithm update can change everything.
+                </p>
+            </div>
+            <div class="fade-in">
+                <h2>Why I’m Building</h2>
+                <p>
+                    Because effort should create leverage.
+                    Because drivers deserve ownership.
+                    Because we can build better systems.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="grid">
+            <div class="card fade-in">
+                <h2>Builders Wanted</h2>
+                <p>
+                    Android devs. System thinkers.
+                    People who want to build something real.
+                </p>
+                <a href="https://wa.me/918075032683" class="button primary">Talk Directly</a>
+            </div>
+
+            <div class="card fade-in">
+                <h2>Support The Grind</h2>
+                <p>Funded by rides. Built at night.</p>
+                <div class="qr-box">
+                    <img src="GooglePay_QR.png" alt="UPI QR">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="footer fade-in">
+        Bangalore. Traffic. Ambition. Repeat.
+    </section>
+
+    <!-- Floating Share Button -->
+    <div class="share-float" onclick="toggleShare()">⇪</div>
+
+    <!-- Share Popup -->
+    <div class="share-popup" id="sharePopup">
+        <button class="whatsapp-btn" onclick="shareWhatsApp()">Share on WhatsApp</button>
+        <button class="close-btn" onclick="toggleShare()">Close</button>
+    </div>
+
+    <script>
+
+        // Scroll animation
+        const faders = document.querySelectorAll('.fade-in');
+        const appearOptions = { threshold: 0.2 };
+        const appearOnScroll = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            });
+        }, appearOptions);
+        faders.forEach(fader => { appearOnScroll.observe(fader); });
+
+        // Timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-IN');
+            document.getElementById('timestamp').innerText =
+                "Built after 12-hour shifts • " + time + " IST";
+        }
+        setInterval(updateTimestamp, 1000);
+        updateTimestamp();
+
+        // Share Toggle
+        function toggleShare() {
+            const popup = document.getElementById('sharePopup');
+            popup.style.display = popup.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // WhatsApp Share
+        function shareWhatsApp() {
+            const message = encodeURIComponent("This bike taxi driver is building a startup after 12-hour shifts. Respect the grind. 🚀\n" + window.location.href);
+            window.open("https://wa.me/?text=" + message, '_blank');
+        }
+
+        // Auto trigger at 60% scroll
+        let triggered = false;
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY + window.innerHeight;
+            const pageHeight = document.body.offsetHeight;
+            if (!triggered && scrollPosition / pageHeight > 0.6) {
+                document.getElementById('sharePopup').style.display = 'flex';
+                triggered = true;
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
